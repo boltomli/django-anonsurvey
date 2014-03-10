@@ -54,7 +54,7 @@ class QuestionAdmin(admin.ModelAdmin):
                      'offeredanswer__answer_type',
                      'offeredanswer__text',
                      'offeredanswer__sufix',)
-    list_filter = ('question_type', 'requires_answer', )
+    list_filter = ('question_type', 'requires_answer', 'survey' )
 
 
 class QuestionGroupAdmin(admin.ModelAdmin):
