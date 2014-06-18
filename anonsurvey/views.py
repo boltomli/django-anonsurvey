@@ -63,7 +63,8 @@ def complete_survey(request, pk):
             if not existing_answers:
                 break
             time.sleep(0.001)
-        client_id = '{}@{}'.format(client_id, utils.get_client_ip(request))
+        # remove ip address from client_id - PRIVACY
+        # client_id = '{}@{}'.format(client_id, utils.get_client_ip(request))
         client_answers = []
     # parse, validate and collect answers
     # if survey is inactive questions is empty list (see above)
