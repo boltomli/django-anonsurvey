@@ -11,7 +11,7 @@ Quick start
 
       INSTALLED_APPS = (
           ...
-          'polls',
+          'anonsurvey',
       )
 
    Anonsurvey admin also depends on:
