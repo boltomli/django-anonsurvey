@@ -20,33 +20,34 @@ Quick start
 
    ::
 
-       INSTALLED_APPS = (
+       INSTALLED_APPS = [
            ...
            'anonsurvey',
-       )
+       ]
 
-   Anonsurvey admin also depends on:
-
-   ::
-
-       'tinymce',
-       'sorl.thumbnail',
-       'mce\_filebrowser',
+       SURVEYS_PAGE_SIZE = 5 # for paginator
+       STATIC_ROOT = os.path.join(BASE_DIR, 'static') # optional for collectstatic
 
 2. Include the anonsurvey URLconf in your project urls.py like this:
 
    ::
-
+       from django.conf.urls import url, include
        url(r'^survey/', include('anonsurvey.urls')),
 
 3. Create the anonsurvey models:
 
    ::
 
-       python manage.py makemigrations anonsurvey && python manage.py migrate
+       python manage.py makemigrations anonsurvey
+       python manage.py migrate
 
 4. Start the development server and visit http://127.0.0.1:8000/admin/
    to create a survey (you'll need the Admin app enabled).
+
+   ::
+
+       python manage.py createsuperuser
+       python manage.py runserver
 
 5. Visit http://127.0.0.1:8000/survey/ to list surveys.
 
