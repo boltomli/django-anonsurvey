@@ -23,7 +23,7 @@ Quick start
 
       url(r'^survey/', include('anonsurvey.urls')),
 
-3. Run `python manage.py syncdb` to create the anonsurvey models.
+3. Run `python manage.py makemigrations anonsurvey && python manage.py migrate` to create the anonsurvey models.
 
 4. Start the development server and visit http://127.0.0.1:8000/admin/
    to create a survey (you'll need the Admin app enabled).
