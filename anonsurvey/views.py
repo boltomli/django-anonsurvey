@@ -120,7 +120,7 @@ def complete_survey(request, pk):
                             client_answers.append(clanswer)
                     else:
                         validate_input_value = False
-            elif question.question_type == 'I':
+            elif question.question_type == 'I' or question.question_type == 'AU':
                 validate_input_value = True
                 oanswer = question.offeredanswer_set.all()[0]
                 post_value = post_value[0]

@@ -27,7 +27,17 @@
                 <ul>
                 {% for a in q.offeredanswer_set.all %}
                     <li>
-                        {% if q.question_type == 'I' %}
+                        {% if q.question_type == 'AU' %}
+                            {{ a.prefix }} <input type="text" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" 
+                                                {% with value=last_post|dictget:q.id %}
+                                                    {% if value %}
+                                                        value="{{ value.0 }}" 
+                                                    {% elif a.default %}
+                                                        value="{{ a.default }}" 
+                                                    {% endif %}
+                                                {% endwith %}
+                                           /> {{ a.sufix }} {% if a.validation_format %}(format: {{ a.validation_format }}){% endif %}
+                        {% elif q.question_type == 'I' %}
                             {{ a.prefix }} <input type="text" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" 
                                                 {% with value=last_post|dictget:q.id %}
                                                     {% if value %}

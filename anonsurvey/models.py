@@ -60,12 +60,14 @@ class Question(models.Model):
     QTYOE_CHECKBOX = 'C'
     QTYPE_RADIO_INPUT = 'RI'
     QTYPE_CHECKBOX_INPUT = 'CI'
+    QTYPE_AUDIO = 'AU'
     QUESTION_TYPES = (
         (QTYPE_INPUT, _('input')),
         (QTYPE_RADIO, _('choice')),
         (QTYOE_CHECKBOX, _('multiple choice')),
         (QTYPE_RADIO_INPUT, _('choice with input')),
         (QTYPE_CHECKBOX_INPUT, _('multiple choice with input')),
+        (QTYPE_AUDIO, _('url to play as audio')),
     )
 
     survey = models.ForeignKey(Survey, verbose_name=_('Survey'))
