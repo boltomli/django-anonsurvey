@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from django.db import models
 from tinymce.models import HTMLField
 from django.utils.translation import ugettext_lazy as _
@@ -29,7 +28,7 @@ class Survey(models.Model):
                 else:
                     foo[key].append(q)
         spam = []
-        for key in foo.iterkeys():
+        for key in list(foo.keys()):
             keyval = key[1]
             spam.append((keyval, foo[key]))
         return spam
