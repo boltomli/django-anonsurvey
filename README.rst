@@ -31,6 +31,7 @@ Quick start
 2. Include the anonsurvey URLconf in your project urls.py like this:
 
    ::
+
        from django.conf.urls import url, include
        url(r'^survey/', include('anonsurvey.urls')),
 
