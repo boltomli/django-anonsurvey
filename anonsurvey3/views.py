@@ -1,4 +1,4 @@
-from anonsurvey.models import Survey, Question, QuestionGroup,\
+from .models import Survey, Question, QuestionGroup,\
     OfferedAnswer, Answer
 from django.views import generic
 from django.conf import settings
@@ -10,11 +10,11 @@ import re
 from django.utils.translation import ugettext_lazy as _
 import time
 from django.views.decorators.http import require_POST
-from anonsurvey import utils
+from . import utils
 
 
 class SurveysView(generic.ListView):
-    template_name = 'anonsurvey/surveys.html'
+    template_name = 'anonsurvey3/surveys.html'
     context_object_name = 'surveys'
     paginate_by = settings.SURVEYS_PAGE_SIZE
 
@@ -26,7 +26,7 @@ class SurveysView(generic.ListView):
 class SurveyView(generic.DetailView):
     model = Survey
     slug_field = 'name'
-    template_name = 'anonsurvey/survey.html'
+    template_name = 'anonsurvey3/survey.html'
 
     def get_queryset(self):
         survey = super(SurveyView, self).get_queryset()

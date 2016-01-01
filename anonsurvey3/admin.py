@@ -1,6 +1,5 @@
 from django.contrib import admin
-from anonsurvey.models import Survey, QuestionGroup, Question,\
-    OfferedAnswer
+from .models import Survey, QuestionGroup, Question, OfferedAnswer
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError

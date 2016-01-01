@@ -1,7 +1,9 @@
-Anonsurvey
-==========
+Anonsurvey3
+===========
 
-Anonsurvey is a Django app to create Web-based anonymous surveys.
+Anonsurvey is a Django app to create Web-based anonymous surveys by https://github.com/darko-poljak/django-anonsurvey.
+
+Anonsurvey3 is a fork to support Python 3 and add more question types such as audio.
 
 Quick start
 -----------
@@ -14,15 +16,15 @@ Quick start
        git clone https://github.com/boltomli/django-anonsurvey.git
        cd django-anonsurvey
        python setup.py bdist_wheel
-       pip install --upgrade dist/django_anonsurvey-*.whl
+       pip install --upgrade dist/django_anonsurvey*.whl
 
-1. Add "anonsurvey" to your INSTALLED\_APPS setting like this:
+1. Add "anonsurvey3" to your INSTALLED\_APPS setting like this:
 
    ::
 
        INSTALLED_APPS = [
            ...
-           'anonsurvey',
+           'anonsurvey3',
        ]
 
        SURVEYS_PAGE_SIZE = 5 # for paginator
@@ -33,13 +35,13 @@ Quick start
    ::
 
        from django.conf.urls import url, include
-       url(r'^survey/', include('anonsurvey.urls')),
+       url(r'^survey/', include('anonsurvey3.urls')),
 
 3. Create the anonsurvey models:
 
    ::
 
-       python manage.py makemigrations anonsurvey
+       python manage.py makemigrations anonsurvey3
        python manage.py migrate
 
 4. Start the development server and visit http://127.0.0.1:8000/admin/
@@ -140,7 +142,7 @@ Submitted answers data are:
     -  text - input value for input type of offered answer.
 
 Within package there are simplest templates you can use to make your
-own. For survey display {% include "anonsurvey/survey\_form.thml" with
+own. For survey display {% include "anonsurvey3/survey\_form.thml" with
 survey=survey %} is used. This template provides a way for rendering the
 survey form depending on survey definition. You can use it as is or you
 can use it as a template for constructing yours.

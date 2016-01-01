@@ -2,7 +2,7 @@ from django.db import models
 from tinymce.models import HTMLField
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
-from anonsurvey.validators import validate_regex, validate_question_answers
+from .validators import validate_regex, validate_question_answers
 from collections import OrderedDict
 from django.core.exceptions import ValidationError
 
