@@ -14,7 +14,7 @@ Quick start
        git clone https://github.com/boltomli/django-anonsurvey.git
        cd django-anonsurvey
        python setup.py bdist_wheel
-       pip install dist/django_anonsurvey-*.whl
+       pip install --upgrade dist/django_anonsurvey-*.whl
 
 1. Add "anonsurvey" to your INSTALLED\_APPS setting like this:
 
