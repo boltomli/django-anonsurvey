@@ -23,12 +23,18 @@
         {% endif %}
         {% for q in qg.1 %}
             <li>
-                {% if q.requires_answer %}<strong>*</strong>{% endif %} {{ q.text }}<br>
+                {% if q.requires_answer %}<strong>*</strong>{% endif %}
+                {% if q.question_type == 'AU' %}
+                    <audio controls preload="auto"><source src="{{ q.text }}"/></audio>
+                {% else %}
+                    {{ q.text }}<br>
+                {% endif %}
                 <ul>
                 {% for a in q.offeredanswer_set.all %}
                     <li>
                         {% if q.question_type == 'AU' %}
-                            {{ a.prefix }} <input type="text" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" 
+                             <label for="q{{ q.id }}{{ forloop.counter }}">{{ a.text }}</label>
+                             {{ a.prefix }} <input type="text" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" 
                                                 {% with value=last_post|dictget:q.id %}
                                                     {% if value %}
                                                         value="{{ value.0 }}" 
