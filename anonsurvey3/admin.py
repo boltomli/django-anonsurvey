@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Survey, QuestionGroup, Question, OfferedAnswer
+from .models import Survey, QuestionGroup, Question, OfferedAnswer, Answer
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -67,8 +67,14 @@ class OfferedAnswerAdmin(admin.ModelAdmin):
     search_fields = ('question__text', 'prefix', 'text', 'sufix')
     list_filter = ('answer_type', 'question', 'question__survey')
 
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('client_id','datetime','answer','text')
+    search_fields = ('client_id','datetime','answer','text')
+    list_filter = ('client_id','datetime','answer','text')
+
 
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(QuestionGroup, QuestionGroupAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(OfferedAnswer, OfferedAnswerAdmin)
+admin.site.register(Answer, AnswerAdmin)

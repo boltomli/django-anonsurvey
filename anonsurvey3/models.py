@@ -33,7 +33,7 @@ class Survey(models.Model):
             spam.append((keyval, foo[key]))
         return spam
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}: {}'.format(self.name, self.title)
 
     class Meta:
@@ -46,7 +46,7 @@ class QuestionGroup(models.Model):
     survey = models.ForeignKey(Survey, verbose_name=_('Survey'))
     text = models.CharField(max_length=256, verbose_name=_('Text'))
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}: {}'.format(self.survey, self.text)
 
     class Meta:
@@ -81,7 +81,7 @@ class Question(models.Model):
     sort_index = models.PositiveIntegerField(default=1,
                                              verbose_name=_('Sort By Asc'))
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}: {}'.format(self.survey, self.text)
 
     def clean(self):
@@ -122,7 +122,7 @@ class OfferedAnswer(models.Model):
     sort_index = models.PositiveIntegerField(default=1,
                                              verbose_name=_('Sort By Asc'))
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}: {}: {}: {}'.format(self.answer_type,
                                        self.prefix,
                                        self.text,
@@ -145,7 +145,7 @@ class Answer(models.Model):
     # entered text for inputs
     text = models.CharField(max_length=256, verbose_name=_('Entered Text'))
 
-    def __unicode__(self):
+    def __str__(self):
         return '{}: {}: {}'.format(self.client_id,
                                    self.answer,
                                    self.text)
