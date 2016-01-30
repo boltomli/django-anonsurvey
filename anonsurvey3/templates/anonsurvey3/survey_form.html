@@ -1,40 +1,119 @@
+<script>
+   window.onload = function(){
+        current = 0;
+        questionlist = document.querySelectorAll("div[data-type='question']");
+        questionlength = questionlist.length;
+        submitbutton = document.getElementsByName("submit")[0];
+        if (questionlength > 1) {
+            for (var i = 1; i < questionlength; i++) {
+                questionlist[i].style.display = "none";
+            }
+            submitbutton = document.getElementsByName("submit")[0];
+            submitbutton.style.display = "none";
+        }
+        
+        errorlist = document.querySelectorAll("#errinfo a");
+        if (errorlist && errorlist.length > 0) {
+            for (var i = 0; i < errorlist.length; i++) {
+                errorlist[i].onclick = function (event) {
+                    var errorinfo = event.target.getAttribute("aria-data");
+                    if (errorinfo.indexOf("requires answer") > 0) {
+                        var qutitle = errorinfo.replace("Question ", "").replace(" requires answer", "").replace(/\"/g,"");
+                        var questionlength = questionlist.length;
+                        for (var j = 0; j < questionlength; j++) {
+                            if (questionlist[j].getAttribute("aria-data").replace(/\"/g, "") == qutitle) {
+                                questionlist[current].style.display = "none";
+                                current = j;
+                                questionlist[current].style.display = "";
+                                //Move focus to current question
+                                for (var k = 0; k < questionlist[current].childNodes.length; k++) {
+                                    if (questionlist[current].childNodes[k].type == "button") {
+                                        questionlist[current].childNodes[k].focus();
+                                        break;
+                                    }
+                                }
+                                event.target.parentNode.removeChild(event.target);
+                                errorlist = document.querySelectorAll("#errinfo a");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            submitbutton.style.display = "";
+        }
+
+       //do nothing if press enter on input text box
+       inputlist = document.querySelectorAll("input[type='text']");
+       for (var i = 0; i < inputlist.length; i++) {
+           inputlist[i].onkeypress = function (e) {
+               var key = window.event ? e.keyCode : e.which;
+               if (key.toString() == "13") {
+                   return false;
+               }
+           }
+       }
+    };
+    function next(event) {
+        questionlist[current].style.display = "none";
+        current = (current + 1) % questionlength;
+        questionlist[current].style.display = "";
+
+        // return to first. All question has shown at least once.
+        if (current == 0) {
+            submitbutton.style.display = "";
+        }
+        else {
+            //Move focus to current question
+            for (var i = 0; i < questionlist[current].childNodes.length; i++) {
+                if (questionlist[current].childNodes[i].type == "button") {
+                    questionlist[current].childNodes[i].focus();
+                    break;
+                }
+            }
+        }
+    }
+
+    function Button_Play_Click(src) {
+        var player = document.getElementById("player");
+        player.src = src;
+        player.play();
+    }
+</script>
 {% load i18n %}
 {% load anonsurvey_extras %}
-
 <div>
+    <audio controls preload="auto" style="display:none" tabindex="-1" id="player"></audio>
 {% if survey %}
     <h3>{{ survey.title }}</h3>
     <p>{{ survey.intro|safe }}</p>
     {% if error_messages %}
-        <p>
-            <ul>
+        <div id="errinfo">          
             {% for err in error_messages %}
-                <li><strong>{{ err }}</strong></li>
+                <a href="#" aria-label="Click to navigate to unfinished question"  aria-data="{{err}}" tabindex="1">Click to navigate to unfinished question</a>
             {% endfor %}
-            </ul>
-        </p>
+        </div>
     {% endif %}
     <form action="{% url 'survey_complete' survey.id %}" method="post">
     {% csrf_token%}
-    <ol>
     {% for qg in survey.question_or_group %}
         {% if qg.0 %}
-            <li>{{ qg.0.text }}<br><ol>
+            <span aria-label="{{qg.0.text}}">{{ qg.0.text }}</span>
         {% endif %}
         {% for q in qg.1 %}
-            <li>
+            <div data-type="question" aria-data="{{q.text}}">
                 {% if q.requires_answer %}<strong>*</strong>{% endif %}
                 {% if q.question_type == 'AU' %}
-                    <audio controls preload="auto"><source src="{{ q.text }}"/></audio>
+                   <input id="Button_Play" type="button" aria-label="play this wav" value="play wav" onclick="Button_Play_Click('{{q.text}}')" tabindex="2"/>
                 {% else %}
-                    {{ q.text }}<br>
+                <label aria-label="{{ q.text }}">{{ q.text }}</label><br>
                 {% endif %}
-                <ul>
+                <div>
                 {% for a in q.offeredanswer_set.all %}
-                    <li>
+                    <div>
                         {% if q.question_type == 'AU' %}
                              <label for="q{{ q.id }}{{ forloop.counter }}">{{ a.text }}</label>
-                             {{ a.prefix }} <input type="text" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" 
+                             {{ a.prefix }} <input tabindex="2" type="text" aria-label="{{ a.text }}" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" 
                                                 {% with value=last_post|dictget:q.id %}
                                                     {% if value %}
                                                         value="{{ value.0 }}" 
@@ -44,7 +123,7 @@
                                                 {% endwith %}
                                            /> {{ a.sufix }} {% if a.validation_format %}(format: {{ a.validation_format }}){% endif %}
                         {% elif q.question_type == 'I' %}
-                            {{ a.prefix }} <input type="text" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" 
+                            {{ a.prefix }} <input tabindex="2" type="text" aria-label="{{ a.text }}" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" 
                                                 {% with value=last_post|dictget:q.id %}
                                                     {% if value %}
                                                         value="{{ value.0 }}" 
@@ -54,7 +133,7 @@
                                                 {% endwith %}
                                            /> {{ a.sufix }} {% if a.validation_format %}(format: {{ a.validation_format }}){% endif %}
                         {% elif q.question_type == 'R' %}
-                            <input type="radio" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" value="{{ a.id }}" 
+                            <input type="radio"  tabindex="2" aria-label="{{ a.text }}" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" value="{{ a.id }}" 
                                 {% with value=last_post|dictget:q.id %}
                                     {% if value %}
                                         {% if value.0|add:"0" == a.id %}
@@ -66,7 +145,7 @@
                                 {% endwith %}
                             /> {{ a.text }}
                         {% elif q.question_type == 'C' %}
-                            <input type="checkbox" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" value="{{ a.id }}" 
+                            <input type="checkbox" tabindex="2" aria-label="{{ a.text }}" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" value="{{ a.id }}" 
                                 {% with value=last_post|dictget:q.id %}
                                     {% if value %}
                                         {% if value.0|add:"0" == a.id %}
@@ -78,7 +157,7 @@
                                 {% endwith %}
                             /> {{ a.text }}
                         {% elif q.question_type == 'RI' %}
-                            <input type="radio" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" value="{{ a.id }}" 
+                            <input type="radio" tabindex="2" aria-label="{{ a.text }}" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" value="{{ a.id }}" 
                                 {% with value=last_post|dictget:q.id %}
                                     {% if value %}
                                         {% if value.0|add:"0" == a.id %}
@@ -90,7 +169,7 @@
                                 {% endwith %}
                             />
                             {% if a.answer_type == 'I' %}
-                                {{ a.prefix }} <input type="text" name="q{{ q.id }}_value" id="q{{ q.id }}{{ forloop.counter }}_value" 
+                                {{ a.prefix }} <input type="text" tabindex="2" aria-label="{{ a.text }}" name="q{{ q.id }}_value" id="q{{ q.id }}{{ forloop.counter }}_value" 
                                                 {% with key=q.id|add:"_value" %}
                                                     {% with value=last_post|dictget:key %}
                                                         {% if value %}
@@ -105,21 +184,20 @@
                                 {{ a.text }}
                             {% endif %}
                         {% elif q.question_type == 'CI' %}
-                            <input type="checkbox" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" value="{{ a.id }}" 
-                                {% with value=last_post|dictget:q.id %}
-                                    {% if value %}
-                                        {% if a.id|asstr in value %}
-                                            checked="checked"
-                                        {% endif %}
-                                    {% elif a.default %}
-                                        checked="checked"
-                                    {% endif %}
-                                {% endwith %}
-                            />
+                        <input type="checkbox" tabindex="2" aria-label="{{ a.text }}" name="q{{ q.id }}" id="q{{ q.id }}{{ forloop.counter }}" value="{{ a.id }}"
+                               {% with value=last_post|dictget:q.id %}
+                               {% if value %}
+                               {% if a.id|asstr in value %}
+                               checked="checked"
+                               {% endif %}
+                               {% elif a.default %}
+                               checked="checked"
+                               {% endif %}
+                               {% endwith %} />
                             {% if a.answer_type == 'I' %}
                                 {% with key=q.id|add:"_value" %}
                                     {% with value=last_post|dictget:key %}
-                                        {{ a.prefix }} <input type="text" name="q{{ q.id }}_value" id="q{{ q.id }}{{ forloop.counter }}_value" 
+                                        {{ a.prefix }} <input tabindex="2" type="text" name="q{{ q.id }}_value" id="q{{ q.id }}{{ forloop.counter }}_value" 
                                                         {% if value %}
                                                             value="{{ value.0 }}" 
                                                         {% elif a.default %}
@@ -132,17 +210,17 @@
                                 {{ a.text }}
                             {% endif %}
                         {% endif %}
-                    </li>
+                    </div>
                 {% endfor %}
-                </ul>
-            </li>
+                </div>
+            </div>
         {% endfor %}
         {% if qg.0 %}
-            </li></ol>
+            </div></div>
         {% endif %}
     {% endfor %}
-    </ol>
-    <input type="submit" name="submit" value="{% trans 'Send' %}"/>
+    <input type="button" value="next" onclick="next()" tabindex="10" />
+    <input type="submit" name="submit" value="{% trans 'Send' %}" tabindex="10" />
     </form>
 {% else %}
     {% trans 'No survey' %}
